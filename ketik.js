@@ -1,5 +1,6 @@
 // ketik.js
 // Rich Text Editor: Auto-UI, Bootstrap Icons, Emoji Popup
+// Fix: Mobile Touch Event Support
 
 function initKetik(targetSelector) {
     const targetEl = document.querySelector(targetSelector);
@@ -11,23 +12,18 @@ function initKetik(targetSelector) {
     const container = document.createElement('div');
     container.className = 'ketik-container';
 
-    // Toolbar Wrapper
     const toolbar = document.createElement('div');
     toolbar.className = 'ketik-toolbar';
 
-    // Emoji Popup Container (Hidden by default)
     const emojiWrapper = document.createElement('div');
     emojiWrapper.className = 'ketik-emoji-popup'; 
-    // Grid emoji nanti dimasukkan ke sini
 
-    // Editor Area
     const editor = document.createElement('div');
     editor.className = 'ketik-content';
     editor.contentEditable = true;
     editor.innerHTML = targetEl.value;
     editor.setAttribute('placeholder', targetEl.getAttribute('placeholder') || 'Tulis sesuatu...');
 
-    // Footer (Hanya untuk Counter sekarang)
     const footer = document.createElement('div');
     footer.className = 'ketik-footer';
     const charCount = document.createElement('small');
@@ -35,9 +31,8 @@ function initKetik(targetSelector) {
     charCount.innerText = '0 Karakter';
     footer.appendChild(charCount);
 
-    // Rakit DOM
     container.appendChild(toolbar);
-    container.appendChild(emojiWrapper); // Popup ditaruh setelah toolbar
+    container.appendChild(emojiWrapper);
     container.appendChild(editor);
     container.appendChild(footer);
 
@@ -55,7 +50,6 @@ function initKetik(targetSelector) {
         { icon: '<i class="bi bi-file-earmark-code"></i>', cmd: 'pre', title: 'Block Code' },
         { icon: '<i class="bi bi-eye-slash"></i>', cmd: 'tg-spoiler', title: 'Spoiler' },
         { separator: true },
-        // Tombol Emoji Baru
         { icon: '<i class="bi bi-emoji-smile"></i>', cmd: 'toggleEmoji', title: 'Pilih Emoji' },
         { icon: '<i class="bi bi-eraser"></i>', cmd: 'clean', title: 'Hapus Format' }
     ];
@@ -63,7 +57,6 @@ function initKetik(targetSelector) {
     // --- 3. CORE FUNCTIONS ---
     const execCmd = (command, value = null) => {
         document.execCommand(command, false, value);
-        editor.focus();
         syncData();
     };
 
@@ -97,19 +90,21 @@ function initKetik(targetSelector) {
         buttonEl.innerHTML = btn.icon;
         buttonEl.title = btn.title;
         
-        // Handler Klik
         const handleAction = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault(); 
+            e.stopPropagation(); // Stop event bubbling
 
-            // Logic khusus Emoji
             if (btn.cmd === 'toggleEmoji') {
-                emojiWrapper.classList.toggle('show'); // Toggle class CSS
+                // Toggle show/hide class
+                if (emojiWrapper.classList.contains('show')) {
+                    emojiWrapper.classList.remove('show');
+                } else {
+                    emojiWrapper.classList.add('show');
+                }
                 return;
             }
 
-            // Tutup emoji jika tombol lain ditekan
-            emojiWrapper.classList.remove('show');
+            emojiWrapper.classList.remove('show'); // Tutup emoji jika tombol lain ditekan
 
             if (btn.cmd === 'createLink') {
                 const url = prompt("Masukkan URL:", "https://");
@@ -127,12 +122,13 @@ function initKetik(targetSelector) {
             }
         };
 
+        // Pasang listener ganda (Mouse & Touch)
         buttonEl.addEventListener('mousedown', handleAction);
         buttonEl.addEventListener('touchstart', handleAction, { passive: false });
         toolbar.appendChild(buttonEl);
     });
 
-    // --- 5. SETUP EMOJI GRID ---
+    // --- 5. SETUP EMOJI GRID (FIX MOBILE) ---
     const emojis = [
         '😀','😂','😍','😎','😭','😡','👍','👎','🙏','🔥','🎉','❤️',
         '✅','❌','⚠️','🚀','📢','💡','🤖','💰','🇮🇩','📞','👋','👀'
@@ -141,20 +137,34 @@ function initKetik(targetSelector) {
     emojis.forEach(e => {
         const span = document.createElement('span');
         span.innerText = e;
-        span.onclick = (ev) => {
-            ev.preventDefault();
+        
+        // Handler Universal untuk Emoji
+        const insertEmoji = (ev) => {
+            ev.preventDefault(); // Mencegah browser zoom/scroll/blur
+            ev.stopPropagation(); // Mencegah event bubbling ke document
+            
             execCmd('insertText', e);
-            emojiWrapper.classList.remove('show'); // Tutup setelah pilih
+            emojiWrapper.classList.remove('show'); // Tutup popup setelah pilih
         };
+
+        // WAJIB: Gunakan touchstart untuk respons instan di HP
+        span.addEventListener('touchstart', insertEmoji, { passive: false });
+        // Fallback untuk PC
+        span.addEventListener('mousedown', insertEmoji);
+
         emojiWrapper.appendChild(span);
     });
 
-    // Klik di luar emoji untuk menutup popup
-    document.addEventListener('click', (e) => {
+    // Klik di luar (Document) untuk menutup popup
+    // Menggunakan 'touchstart' di document agar lebih responsif menutup popup di HP
+    const closePopup = (e) => {
         if (!container.contains(e.target)) {
             emojiWrapper.classList.remove('show');
         }
-    });
+    };
+    document.addEventListener('click', closePopup);
+    document.addEventListener('touchstart', closePopup, { passive: false });
+
 
     // --- 6. SYNC DATA ---
     function syncData() {
