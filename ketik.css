@@ -1,196 +1,126 @@
-/* ketik.css - Full Updated Version */
+/* ketik.css v3.0 */
 
-/* 1. CONTAINER UTAMA */
+/* 1. Container */
 .ketik-container {
-    background: #ffffff;
-    border: 1px solid #ced4da; /* Warna border standar Bootstrap */
-    border-radius: 8px;
-    position: relative; /* Wajib: Agar popup emoji melayang relatif terhadap kotak ini */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    max-width: 100%;
+    background: #fff;
+    border: 1px solid #c3c4c7; /* Warna border WP */
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-/* 2. TOOLBAR */
+/* 2. Toolbar */
 .ketik-toolbar {
-    background: #f8f9fa;
-    padding: 8px;
-    border-bottom: 1px solid #dee2e6;
+    background: #f0f0f1;
+    padding: 6px;
+    border-bottom: 1px solid #c3c4c7;
     display: flex;
-    flex-wrap: wrap; /* Agar tombol turun ke bawah jika layar sempit (HP) */
-    gap: 4px;
+    flex-wrap: wrap;
+    gap: 2px;
     align-items: center;
 }
+
+/* Disabled State (Saat Mode HTML) */
+.ketik-toolbar.disabled-mode .ketik-btn { opacity: 0.3; pointer-events: none; }
+.ketik-toolbar.disabled-mode .ketik-btn:nth-last-child(2) { opacity: 1; pointer-events: auto; background: #fff; color: #2271b1; }
 
 .ketik-btn {
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: 2px;
     cursor: pointer;
-    min-width: 36px; /* Lebih lebar dikit biar enak di jempol */
-    height: 36px;
+    min-width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px; /* Ukuran Icon Bootstrap */
-    color: #495057;
-    transition: all 0.2s ease;
-    
-    /* Mobile Touch Optimization */
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-}
-
-.ketik-btn:hover {
-    background-color: #e2e6ea;
-    color: #0d6efd; /* Warna biru Bootstrap */
-    border-color: #dbeafe;
-}
-
-.ketik-btn:active {
-    background-color: #dbeafe;
-    transform: scale(0.95); /* Efek membal saat ditekan */
-}
-
-/* Garis Pemisah (Separator) */
-.ketik-separator {
-    width: 1px;
-    height: 24px;
-    background: #ced4da;
-    margin: 0 6px;
-}
-
-/* 3. EMOJI POPUP (FIXED FOR MOBILE) */
-.ketik-emoji-popup {
-    display: none; /* Default hidden */
-    position: absolute;
-    top: 55px; /* Jarak dari atas container (di bawah toolbar) */
-    left: 10px;
-    background: #ffffff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Shadow lebih tebal agar terlihat melayang */
-    padding: 10px;
-    width: 260px; /* Lebar popup */
-    max-width: 90%; /* Agar tidak melebar keluar layar di HP kecil */
-    
-    /* Grid Layout */
-    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-    gap: 5px;
-    
-    z-index: 1000; /* Pastikan di atas elemen lain */
-}
-
-.ketik-emoji-popup.show {
-    display: grid;
-    animation: fadeIn 0.2s ease-out;
-}
-
-.ketik-emoji-popup span {
-    font-size: 24px; /* Ukuran emoji besar */
-    cursor: pointer;
-    text-align: center;
-    padding: 8px; /* Area sentuh luas */
-    border-radius: 6px;
-    transition: background 0.1s;
-    line-height: 1;
-
-    /* WAJIB UNTUK HP: Mencegah seleksi teks saat tap cepat */
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.ketik-emoji-popup span:hover {
-    background-color: #f1f3f5;
-    transform: scale(1.1);
-}
-
-.ketik-emoji-popup span:active {
-    background-color: #e9ecef;
-}
-
-/* 4. EDITOR CONTENT AREA */
-.ketik-content {
-    min-height: 180px; /* Tinggi minimal */
-    max-height: 500px; /* Scroll jika terlalu panjang */
-    overflow-y: auto;
-    padding: 16px;
-    outline: none; /* Hilangkan garis biru default browser */
-    font-size: 16px;
-    line-height: 1.6;
-    color: #212529;
-}
-
-/* Placeholder Hack */
-.ketik-content[placeholder]:empty:before {
-    content: attr(placeholder);
-    color: #adb5bd;
-    display: block;
-    cursor: text;
-}
-
-/* Styling Hasil Ketikan (Tags) */
-.ketik-content b { font-weight: 700; }
-.ketik-content i { font-style: italic; }
-
-.ketik-content code { 
-    background: #f8f9fa; 
-    border: 1px solid #e9ecef;
-    padding: 2px 6px; 
-    border-radius: 4px; 
-    color: #d63384; /* Pink code color */
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.9em;
-}
-
-.ketik-content pre { 
-    background: #212529; 
-    color: #f8f9fa; 
-    padding: 12px; 
-    border-radius: 6px; 
-    font-family: monospace; 
-    white-space: pre-wrap; /* Wrap text agar tidak horizontal scroll berlebih */
-    margin: 10px 0;
-    font-size: 0.9em;
-}
-
-.ketik-content .tg-spoiler { 
-    background-color: #343a40; 
-    color: transparent; /* Teks hilang */
-    border-radius: 3px; 
-    cursor: help; 
-    padding: 0 4px;
-    transition: all 0.2s;
-}
-
-.ketik-content .tg-spoiler:hover { 
-    color: #ffffff; /* Teks muncul saat hover */
-}
-
-.ketik-content a {
-    color: #0d6efd;
-    text-decoration: underline;
-}
-
-/* 5. FOOTER INFO */
-.ketik-footer {
-    border-top: 1px solid #dee2e6;
-    background: #fcfcfc;
-    padding: 8px 16px;
-    text-align: right;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-
-.ketik-counter {
-    color: #adb5bd;
-    font-size: 12px;
+    font-size: 15px;
+    color: #2c3338;
+    transition: all 0.1s;
     font-weight: 500;
 }
 
-/* Animasi Fade In untuk Popup */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+.ketik-btn:hover { background: #fff; border-color: #2271b1; color: #2271b1; }
+.ketik-btn:active { background: #f6f7f7; box-shadow: inset 0 2px 5px -3px rgba(0,0,0,0.2); }
+
+.ketik-separator { width: 1px; height: 20px; background: #dcdcde; margin: 0 5px; }
+
+/* 3. Editor Content */
+.ketik-content {
+    min-height: 250px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 16px;
+    outline: none;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #1d2327;
+    background: #fff;
 }
+
+.ketik-content[placeholder]:empty:before { content: attr(placeholder); color: #646970; display: block; }
+
+/* Styles ala WYSIWYG */
+.ketik-content h1, .ketik-content h2 { margin: 15px 0 10px; font-weight: 600; color: #1d2327; }
+.ketik-content h1 { font-size: 2em; border-bottom: 1px solid #eee; }
+.ketik-content h2 { font-size: 1.5em; }
+
+/* Blockquote Style */
+.ketik-content blockquote {
+    border-left: 4px solid #2271b1;
+    margin: 10px 0;
+    padding: 5px 15px;
+    background: #f0f6fc;
+    color: #444;
+    font-style: italic;
+}
+
+/* Horizontal Rule */
+.ketik-content hr { border: 0; border-top: 2px solid #ddd; margin: 20px 0; }
+
+/* Image Style */
+.ketik-content img { max-width: 100%; height: auto; border-radius: 4px; border: 1px solid #ddd; }
+
+/* 4. Source Code View */
+.ketik-source {
+    width: 100%;
+    min-height: 250px;
+    padding: 15px;
+    background: #1d2327;
+    color: #f0f0f1;
+    border: none;
+    resize: vertical;
+    outline: none;
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* 5. Emoji Popup */
+.ketik-emoji-popup {
+    display: none;
+    position: absolute;
+    top: 50px; left: 10px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 10px;
+    width: 250px;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+    gap: 4px;
+    z-index: 1000;
+}
+.ketik-emoji-popup.show { display: grid; }
+.ketik-emoji-popup span { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; border-radius: 3px; }
+.ketik-emoji-popup span:hover { background: #f0f0f1; }
+
+/* 6. Footer */
+.ketik-footer {
+    border-top: 1px solid #c3c4c7;
+    background: #f6f7f7;
+    padding: 6px 15px;
+    text-align: right;
+}
+.ketik-counter { color: #646970; font-size: 12px; }
