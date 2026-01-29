@@ -110,5 +110,3 @@ Feel free to check the issues page.
 
 Copyright © 2025 Hendi Surya Lubis.
 This project is MIT licensed.
-
-```
