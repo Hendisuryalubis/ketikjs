@@ -1,4 +1,3 @@
-```markdown
 # 📝 KetikJS
 
 **Mobile-First Rich Text Editor** for modern web. Lightweight, fast, and dependency-free.
