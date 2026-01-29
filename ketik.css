@@ -1,21 +1,23 @@
-/* ketik.css */
+/* ketik.css - Full Updated Version */
 
+/* 1. CONTAINER UTAMA */
 .ketik-container {
-    background: #fff;
-    border: 1px solid #ced4da;
+    background: #ffffff;
+    border: 1px solid #ced4da; /* Warna border standar Bootstrap */
     border-radius: 8px;
-    position: relative; /* Penting untuk popup */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    font-family: -apple-system, sans-serif;
+    position: relative; /* Wajib: Agar popup emoji melayang relatif terhadap kotak ini */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 100%;
 }
 
-/* Toolbar */
+/* 2. TOOLBAR */
 .ketik-toolbar {
     background: #f8f9fa;
     padding: 8px;
     border-bottom: 1px solid #dee2e6;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Agar tombol turun ke bawah jika layar sempit (HP) */
     gap: 4px;
     align-items: center;
 }
@@ -23,76 +25,172 @@
 .ketik-btn {
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    width: 34px;
-    height: 34px;
+    min-width: 36px; /* Lebih lebar dikit biar enak di jempol */
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 18px; /* Ukuran Icon Bootstrap */
     color: #495057;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    
+    /* Mobile Touch Optimization */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
-.ketik-btn:hover { background-color: #e2e6ea; color: #0d6efd; }
-.ketik-separator { width: 1px; height: 20px; background: #ccc; margin: 0 4px; }
+.ketik-btn:hover {
+    background-color: #e2e6ea;
+    color: #0d6efd; /* Warna biru Bootstrap */
+    border-color: #dbeafe;
+}
 
-/* Emoji Popup (NEW) */
+.ketik-btn:active {
+    background-color: #dbeafe;
+    transform: scale(0.95); /* Efek membal saat ditekan */
+}
+
+/* Garis Pemisah (Separator) */
+.ketik-separator {
+    width: 1px;
+    height: 24px;
+    background: #ced4da;
+    margin: 0 6px;
+}
+
+/* 3. EMOJI POPUP (FIXED FOR MOBILE) */
 .ketik-emoji-popup {
-    display: none; /* Hidden by default */
+    display: none; /* Default hidden */
     position: absolute;
-    top: 50px; /* Di bawah toolbar */
+    top: 55px; /* Jarak dari atas container (di bawah toolbar) */
     left: 10px;
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #dee2e6;
-    border-radius: 6px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Shadow lebih tebal agar terlihat melayang */
     padding: 10px;
-    width: 240px;
-    grid-template-columns: repeat(6, 1fr);
+    width: 260px; /* Lebar popup */
+    max-width: 90%; /* Agar tidak melebar keluar layar di HP kecil */
+    
+    /* Grid Layout */
+    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
     gap: 5px;
-    z-index: 100;
+    
+    z-index: 1000; /* Pastikan di atas elemen lain */
 }
 
-.ketik-emoji-popup.show { display: grid; } /* Class trigger JS */
+.ketik-emoji-popup.show {
+    display: grid;
+    animation: fadeIn 0.2s ease-out;
+}
 
 .ketik-emoji-popup span {
-    font-size: 20px;
+    font-size: 24px; /* Ukuran emoji besar */
     cursor: pointer;
     text-align: center;
-    padding: 4px;
-    border-radius: 4px;
-}
-.ketik-emoji-popup span:hover { background: #f1f3f5; transform: scale(1.2); }
+    padding: 8px; /* Area sentuh luas */
+    border-radius: 6px;
+    transition: background 0.1s;
+    line-height: 1;
 
-/* Editor Content */
+    /* WAJIB UNTUK HP: Mencegah seleksi teks saat tap cepat */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ketik-emoji-popup span:hover {
+    background-color: #f1f3f5;
+    transform: scale(1.1);
+}
+
+.ketik-emoji-popup span:active {
+    background-color: #e9ecef;
+}
+
+/* 4. EDITOR CONTENT AREA */
 .ketik-content {
-    min-height: 180px;
-    padding: 15px;
-    outline: none;
+    min-height: 180px; /* Tinggi minimal */
+    max-height: 500px; /* Scroll jika terlalu panjang */
+    overflow-y: auto;
+    padding: 16px;
+    outline: none; /* Hilangkan garis biru default browser */
     font-size: 16px;
     line-height: 1.6;
     color: #212529;
 }
 
+/* Placeholder Hack */
 .ketik-content[placeholder]:empty:before {
     content: attr(placeholder);
     color: #adb5bd;
     display: block;
+    cursor: text;
 }
 
-/* Styles */
-.ketik-content code { background: #f8f9fa; padding: 2px 4px; border-radius: 4px; color: #d63384; font-family: monospace; border: 1px solid #eee; }
-.ketik-content pre { background: #212529; color: #fff; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; margin: 10px 0; }
-.ketik-content .tg-spoiler { background: #495057; color: transparent; border-radius: 3px; cursor: pointer; padding: 0 2px; }
-.ketik-content .tg-spoiler:hover { color: #fff; }
+/* Styling Hasil Ketikan (Tags) */
+.ketik-content b { font-weight: 700; }
+.ketik-content i { font-style: italic; }
 
-/* Footer Counter */
+.ketik-content code { 
+    background: #f8f9fa; 
+    border: 1px solid #e9ecef;
+    padding: 2px 6px; 
+    border-radius: 4px; 
+    color: #d63384; /* Pink code color */
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9em;
+}
+
+.ketik-content pre { 
+    background: #212529; 
+    color: #f8f9fa; 
+    padding: 12px; 
+    border-radius: 6px; 
+    font-family: monospace; 
+    white-space: pre-wrap; /* Wrap text agar tidak horizontal scroll berlebih */
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.ketik-content .tg-spoiler { 
+    background-color: #343a40; 
+    color: transparent; /* Teks hilang */
+    border-radius: 3px; 
+    cursor: help; 
+    padding: 0 4px;
+    transition: all 0.2s;
+}
+
+.ketik-content .tg-spoiler:hover { 
+    color: #ffffff; /* Teks muncul saat hover */
+}
+
+.ketik-content a {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+/* 5. FOOTER INFO */
 .ketik-footer {
     border-top: 1px solid #dee2e6;
     background: #fcfcfc;
-    padding: 5px 15px;
+    padding: 8px 16px;
     text-align: right;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
-.ketik-counter { color: #adb5bd; font-size: 11px; }
+
+.ketik-counter {
+    color: #adb5bd;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Animasi Fade In untuk Popup */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
